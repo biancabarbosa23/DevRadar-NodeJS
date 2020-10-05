@@ -1,5 +1,4 @@
 const Dev = require('../models/Dev')
-const { index } = require('../models/utils/PointSchema')
 const parseStringAsArray = require('../utils/parseStringAsArray')
 
 module.exports = {
@@ -7,6 +6,7 @@ module.exports = {
         const { latitude, longitude, techs } = req.query
 
         const techsArray = parseStringAsArray(techs)
+
         //Buscar em um radio de 10KM
         const devs = await Dev.find({
             techs: { $in: techsArray },
@@ -14,12 +14,13 @@ module.exports = {
                 $near: {
                     $geometry: {
                         type: 'Point',
-                        coordinates: [longitude, latitude],
+                        coordinates: [longitude, latitude]
                     },
                     $maxDistance: 10000
                 }
             }
         })
+
         //Filtrar por tecnologias
         return res.json(devs)
     }
